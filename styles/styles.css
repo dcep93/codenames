@@ -1,0 +1,82 @@
+html {
+}
+
+html,body{
+	font-family : "Verdana";
+	height:100%;
+	margin:0;
+}
+
+body{
+	display:flex;
+	flex-direction:column;
+}
+
+#header {
+	margin:3%;
+	display:inline-block;
+	width:100%;
+}
+
+#header * {
+	font-size : 1.3em;
+}
+
+#board {
+	font-size : 1.5em;
+	margin: 2%;
+	display:flex;
+	justify-content:center;
+	flex-grow:1;
+	flex-wrap:wrap;
+}
+
+.word {
+	display:flex;
+	justify-content:center;
+	align-content:stretch;
+	flex-direction:column;
+	cursor : pointer;
+	font-weight : bold;
+	box-shadow: 0 0 8px;
+	border-radius:20px;
+	margin:1%;
+	width : 18%;
+	text-align: center;
+}
+
+.word *{
+	margin:20px;
+}
+
+.clicked[data-color=red]{
+	background-color:#ff0000;
+}
+
+.clicked[data-color=blue]{
+	background-color:#00eeee;
+}
+
+.clicked[data-color=yellow]{
+	background-color:#ffff00;
+}
+
+.clicked[data-color=black]{
+	background-color:#808080;
+}
+
+.spymaster .word[data-color=red] *{
+	box-shadow:0 0 10px 10px #ff0000;
+}
+
+.spymaster .word[data-color=blue] *{
+	box-shadow:0 0 10px 10px #00eeee;
+}
+
+.spymaster .word[data-color=yellow] *{
+	box-shadow:0 0 10px 10px #ffff00;
+}
+
+.spymaster .word[data-color=black] *{
+	box-shadow:0 0 10px 10px #808080;
+}
