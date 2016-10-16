@@ -26,7 +26,9 @@ function fire(){
 	//get seed and set the seed for randomizer
 	Math.seedrandom($("#seed").val());
 
-	data.sort();
+	var wordSet = $("#undercover").prop('checked') ? undercover : data;
+
+	wordSet.sort();
 
 	var color = Math.random() > 0.5 ? "red" : "blue";
 	$(".wildcard").attr("data-color",color);
@@ -40,13 +42,13 @@ function fire(){
 
 	$(".word *").each(function(index,element){
 		if($("#seed").val()=="ericisgay"){element.innerHTML = Math.random()<0.33 ? "eric" : (Math.random()<0.5 ? "is" : "gay");return;};
-		var location = index+Math.floor(Math.random()*(data.length-index));
-		element.innerHTML = data[location];
-		data[location] = data[index];
-		data[index] = element.innerHTML;
+		var location = index+Math.floor(Math.random()*(wordSet.length-index));
+		element.innerHTML = wordSet[location];
+		wordSet[location] = wordSet[index];
+		wordSet[index] = element.innerHTML;
 	})
 
-
+	return false;
 }
 
 function spyMaster(){
