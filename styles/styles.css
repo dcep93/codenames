@@ -14,8 +14,9 @@ body{
 
 #header {
 	margin:3%;
-	display:inline-block;
+	display:flex;
 	width:100%;
+    justify-content:space-around;
 }
 
 #header * {
