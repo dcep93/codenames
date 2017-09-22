@@ -15,6 +15,10 @@ function setup(){
         count();
     });
 
+    if(window.location.href.indexOf('?') !== -1) {
+        $("#undercover_label").show();
+    }
+
 }
 
 function newWord(color){
