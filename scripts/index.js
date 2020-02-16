@@ -35,10 +35,6 @@ function fire() {
 	//get seed and set the seed for randomizer
 	Math.seedrandom($("#seed").val());
 
-	var wordSet = $("#undercover").prop("checked") ? undercover : data;
-
-	wordSet.sort();
-
 	var color = Math.random() > 0.5 ? "red" : "blue";
 	$(".wildcard").attr("data-color", color);
 	$("#team")
@@ -53,13 +49,18 @@ function fire() {
 		$(words.splice(Math.random() * words.length, 1)[0]).appendTo("#board");
 	}
 
-	$(".word *").each(function(index, element) {
-		var location =
-			index + Math.floor(Math.random() * (wordSet.length - index));
-		element.innerHTML = wordSet[location];
-		wordSet[location] = wordSet[index];
-		wordSet[index] = element.innerHTML;
-	});
+	getWordSet()
+		.then(wordSet => wordSet.sort())
+		.then(wordSet => {
+			$(".word *").each(function(index, element) {
+				var location =
+					index +
+					Math.floor(Math.random() * (wordSet.length - index));
+				element.innerHTML = wordSet[location];
+				wordSet[location] = wordSet[index];
+				wordSet[index] = element.innerHTML;
+			});
+		});
 
 	count();
 
@@ -73,6 +74,11 @@ function count() {
 
 function spyMaster() {
 	$("#board").toggleClass("spymaster");
+}
+
+function getWordSet() {
+	var wordSet = $("#undercover").prop("checked") ? undercover : data;
+	return Promise.resolve(wordSet);
 }
 
 setup();
