@@ -1,3 +1,6 @@
+var quizletBaseUrl =
+	"https://cors-anywhere.herokuapp.com/https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=";
+
 function setup() {
 	for (var i = 0; i < 8; i++) {
 		newWord("red");
@@ -49,7 +52,8 @@ function fire() {
 		$(words.splice(Math.random() * words.length, 1)[0]).appendTo("#board");
 	}
 
-	getWordSet()
+	new Promise(resolve => setTimeout(resolve))
+		.then(getWordSetPromise)
 		.then(wordSet => wordSet.sort())
 		.then(wordSet => {
 			$(".word *").each(function(index, element) {
@@ -76,9 +80,25 @@ function spyMaster() {
 	$("#board").toggleClass("spymaster");
 }
 
-function getWordSet() {
-	var wordSet = $("#undercover").prop("checked") ? undercover : data;
-	return Promise.resolve(wordSet);
+function getWordSetPromise() {
+	var quizletSetRaw = $("#seed").val();
+	var quizletSetId = parseInt(quizletSetRaw);
+	if (isNaN(quizletSetRaw) || isNaN(quizletSetId)) {
+		var wordSet = $("#undercover").prop("checked") ? undercover : data;
+		return wordSet;
+	} else {
+		var key;
+		if (quizletSetId > 0) {
+			key = "word";
+		} else {
+			quizletSetId = -quizletSetId;
+			key = "definition";
+		}
+		var url = quizletBaseUrl + quizletSetId;
+		return $.getJSON(url)
+			.then(json => json.responses[0].models.term)
+			.then(terms => terms.map(term => term[key]));
+	}
 }
 
 setup();
