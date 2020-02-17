@@ -88,16 +88,25 @@ function getWordSetPromise() {
 		return wordSet;
 	} else {
 		var key;
-		if (quizletSetId > 0) {
-			key = "word";
-		} else {
+		if (quizletSetRaw.indexOf("-") == 0) {
 			quizletSetId = -quizletSetId;
 			key = "definition";
+		} else if (quizletSetRaw.indexOf("+") == 0) {
+			key = "_imageUrl";
+		} else {
+			key = "word";
 		}
 		var url = quizletBaseUrl + quizletSetId;
 		return $.getJSON(url)
 			.then(json => json.responses[0].models.term)
-			.then(terms => terms.map(term => term[key]));
+			.then(terms => terms.map(term => term[key]))
+			.then(words => {
+				if (key == "_imageUrl") {
+					return words.map(word => `<img src=${word}>`);
+				} else {
+					return words;
+				}
+			});
 	}
 }
 
