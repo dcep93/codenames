@@ -18,7 +18,12 @@ function setup() {
 	});
 
 	if (window.location.href.indexOf("?") !== -1) {
-		$("#undercover_label").show();
+		var seed = window.location.href.split("?")[1];
+		if (seed == "undercover") {
+			$("#undercover_label").show();
+		} else {
+			$("#seed").val(seed);
+		}
 	}
 }
 
