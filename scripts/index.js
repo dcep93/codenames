@@ -61,7 +61,10 @@ function fire() {
 		.then(getWordSetPromise)
 		.then(wordSet => wordSet.sort())
 		.then(wordSet => {
-			$(".word *").each(function(index, element) {
+			//get seed and set the seed for randomizer
+			// do again, dont know why
+			Math.seedrandom($("#seed").val());
+			$(".word > div").each(function(index, element) {
 				var location =
 					index +
 					Math.floor(Math.random() * (wordSet.length - index));
@@ -86,7 +89,9 @@ function spyMaster() {
 }
 
 function getWordSetPromise() {
-	var quizletSetRaw = $("#seed").val();
+	var quizletSetRaw = $("#seed")
+		.val()
+		.split("&")[0];
 	var quizletSetId = parseInt(quizletSetRaw);
 	if (isNaN(quizletSetRaw) || isNaN(quizletSetId)) {
 		var wordSet = $("#undercover").prop("checked") ? undercover : data;
