@@ -1,5 +1,13 @@
 var quizletBaseUrl =
-	"https://cors-anywhere.herokuapp.com/https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=";
+	"https://cors-anywhere.herokuapp.com/https://quizlet.com/webapi/3.1/";
+
+var termsEndpoint = "terms?filters[isDeleted]=0&filters[setId]=";
+var searchEndpoint = "sets/search?filters[isDeleted]=0&perPage=9&query=";
+
+function log(arg) {
+	console.log(arg);
+	return arg;
+}
 
 function setup() {
 	for (var i = 0; i < 8; i++) {
@@ -17,14 +25,11 @@ function setup() {
 		count();
 	});
 
-	if (window.location.href.indexOf("?") !== -1) {
-		var seed = window.location.href.split("?")[1];
-		if (seed == "undercover") {
-			$("#undercover_label").show();
-		} else {
-			$("#seed").val(seed);
-		}
-	}
+	var params = new URLSearchParams(window.location.search);
+	if (params.has("seed")) $("#seed").val(params.get("seed"));
+	if (params.has("quizlet")) $("#quizlet").val(params.get("quizlet"));
+	if (params.has("key")) $("#key").val(params.get("key"));
+	if (params.has("undercover")) $("#undercover_label").show();
 }
 
 function newWord(color) {
@@ -40,7 +45,7 @@ function newWord(color) {
 function fire() {
 	$("*").removeClass("spymaster clicked");
 
-	//get seed and set the seed for randomizer
+	// get seed and set the seed for randomizer
 	Math.seedrandom($("#seed").val());
 
 	var color = Math.random() > 0.5 ? "red" : "blue";
@@ -61,7 +66,7 @@ function fire() {
 		.then(getWordSetPromise)
 		.then(wordSet => wordSet.sort())
 		.then(wordSet => {
-			//get seed and set the seed for randomizer
+			// get seed and set the seed for randomizer
 			// do again, dont know why
 			Math.seedrandom($("#seed").val());
 			$(".word > div").each(function(index, element) {
@@ -88,36 +93,65 @@ function spyMaster() {
 	$("#board").toggleClass("spymaster");
 }
 
+function writeUrl(args) {
+	var args = {
+		quizlet: $("#quizlet").val(),
+		seed: $("#seed").val(),
+		key: $("#key").val()
+	};
+	args = Object.fromEntries(
+		Object.entries(args).filter(([k, v]) => Boolean(v))
+	);
+	if (history.replaceState) {
+		var newurl =
+			window.location.protocol +
+			"//" +
+			window.location.host +
+			window.location.pathname +
+			"?" +
+			$.param(args);
+		history.replaceState(null, null, newurl);
+	}
+	return args;
+}
+
 function getWordSetPromise() {
-	var quizletSetRaw = $("#seed")
-		.val()
-		.split("&")[0];
-	var quizletSetId = parseInt(quizletSetRaw);
-	if (isNaN(quizletSetRaw) || isNaN(quizletSetId)) {
+	var args = writeUrl();
+	var keyword = args.quizlet;
+	if (keyword) {
+		var quizletSetId = parseInt(keyword);
+		if (isNaN(quizletSetId)) {
+			return getQuizletFromSearch(keyword, args.key);
+		} else {
+			return getQuizletFromId(quizletSetId, args.key);
+		}
+	} else {
 		var wordSet = $("#undercover").prop("checked") ? undercover : data;
 		return wordSet;
-	} else {
-		var key;
-		if (quizletSetRaw.indexOf("-") == 0) {
-			quizletSetId = -quizletSetId;
-			key = "definition";
-		} else if (quizletSetRaw.indexOf("+") == 0) {
-			key = "_imageUrl";
-		} else {
-			key = "word";
-		}
-		var url = quizletBaseUrl + quizletSetId;
-		return $.getJSON(url)
-			.then(json => json.responses[0].models.term)
-			.then(terms => terms.map(term => term[key]))
-			.then(words => {
-				if (key == "_imageUrl") {
-					return words.map(word => `<img src=${word}>`);
-				} else {
-					return words;
-				}
-			});
 	}
+}
+
+function getQuizletFromSearch(keyword, key) {
+	var url = quizletBaseUrl + searchEndpoint + keyword;
+	return $.getJSON(url)
+		.then(json => json.responses[0].models.set[0].id)
+		.then(setId => getQuizletFromId(setId, key));
+}
+
+function getQuizletFromId(quizletSetId, key) {
+	$("#quizlet").val(quizletSetId);
+	writeUrl();
+	var url = quizletBaseUrl + termsEndpoint + quizletSetId;
+	return $.getJSON(url)
+		.then(json => json.responses[0].models.term)
+		.then(terms => terms.map(term => term[key]))
+		.then(words => {
+			if (key == "_imageUrl") {
+				return words.map(word => `<img src=${word}>`);
+			} else {
+				return words;
+			}
+		});
 }
 
 setup();

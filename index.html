@@ -1,50 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
+	<head>
+		<meta charset="utf-8" />
 
-        <title>codenames</title>
-        <link rel="icon" type="image/png" href="shared/d/d.png">
-        <link rel="stylesheet" href="styles/styles.css">
-        <script src="shared/jquery/jquery-1.9.1.js"></script>
-    </head>
+		<title>codenames</title>
+		<link rel="icon" type="image/png" href="shared/d/d.png" />
+		<link rel="stylesheet" href="styles/styles.css" />
+		<script src="shared/jquery/jquery-1.9.1.js"></script>
+	</head>
 
-    <body>
-        <div>
-            <span id="google_translate_element"></span>
-            <div id='header'>
-                <div>
-                    <form onsubmit="fire();return false;">
-                        <input type="text" id="seed" placeholder="seed" size="8" autofocus>
-                        <button>Play Game</button>
-                    </form>
-                    <button id="spymaster" onclick="spyMaster()">I am SpyMaster</button><br>
-                    <label id="undercover_label" hidden><input type="checkbox" id="undercover" /> <span>Undercover</span></label><br>
-                    <span id="team"></span>
-                    <span id="first">starts first.</span>
-                </div>
-                <div>
-                    <div id="blue_counter_div">Blue has <span id="blue_count"></span> remaining</div>
-                    <div id="red_counter_div">Red has <span id="red_count"></span> remaining</div>
-                </div>
-            </div>
-            <br>
-        </div>
-        <div id="board"></div>
+	<body>
+		<div>
+			<span id="google_translate_element"></span>
+			<div id="header">
+				<div>
+					<form onsubmit="fire();return false;">
+						<div>
+							<input
+								type="text"
+								id="quizlet"
+								placeholder="quizlet"
+								size="8"
+							/>
+							<select id="key">
+								<option value="word">word</option>
+								<option value="definition">definition</option>
+								<option value="_imageUrl">image</option>
+							</select>
+						</div>
+						<div>
+							<input
+								type="text"
+								id="seed"
+								placeholder="seed"
+								size="8"
+								autofocus
+							/>
+							<button>Play Game</button>
+						</div>
+					</form>
+					<button id="spymaster" onclick="spyMaster()">
+						I am SpyMaster</button
+					><br />
+					<label id="undercover_label" hidden
+						><input type="checkbox" id="undercover" />
+						<span>Undercover</span></label
+					><br />
+					<span id="team"></span>
+					<span id="first">starts first.</span>
+				</div>
+				<div>
+					<div id="blue_counter_div">
+						Blue has <span id="blue_count"></span> remaining
+					</div>
+					<div id="red_counter_div">
+						Red has <span id="red_count"></span> remaining
+					</div>
+				</div>
+			</div>
+			<br />
+		</div>
+		<div id="board"></div>
 
+		<script type="text/javascript">
+			function googleTranslateElementInit() {
+				new google.translate.TranslateElement(
+					{
+						pageLanguage: "en",
+						layout:
+							google.translate.TranslateElement.InlineLayout
+								.SIMPLE,
+						gaTrack: true,
+						gaId: "UA-48676831-6"
+					},
+					"google_translate_element"
+				);
+			}
+		</script>
 
-        <script type="text/javascript">
-function googleTranslateElementInit() {
-    new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true, gaId: 'UA-48676831-6'}, 'google_translate_element');
-}
-        </script>
+		<script
+			type="text/javascript"
+			src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+		></script>
 
-        <script type="text/javascript" src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-        <script src="scripts/data.js"></script>
-        <script src="scripts/seedrandom.js"></script>
-        <script src="scripts/index.js"></script>
-
-    </body>
+		<script src="scripts/data.js"></script>
+		<script src="scripts/seedrandom.js"></script>
+		<script src="scripts/index.js"></script>
+	</body>
 </html>
